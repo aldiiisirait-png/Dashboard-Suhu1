@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ESP32 Monitoring</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>ESP32 MONITORING</h1>
+            <p>Monitoring Suhu dan Kelembapan</p>
+        </header>
+
+        <section class="cards">
+
+            <div class="card">
+                <h3>RTC</h3>
+                <div id="tanggal">08 Oktober 2026</div>
+                <div id="waktu">00:00:00</div>
+            </div>
+
+            <div class="card">
+                <h3>SUHU</h3>
+                <div class="nilai">
+                    <span id="suhu">--</span> °C
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>KELEMBAPAN</h3>
+                <div class="nilai">
+                    <span id="kelembapan">--</span> %
+                </div>
+            </div>
+
+        </section>
+
+        <section class="grafik">
+
+            <h2>Grafik Suhu</h2>
+
+            <canvas id="grafikSuhu"></canvas>
+
+        </section>
+
+        <section class="grafik">
+
+            <h2>Grafik Kelembapan</h2>
+
+            <canvas id="grafikKelembapan"></canvas>
+
+        </section>
+
+        <section class="status">
+
+            <h3>Status Sistem</h3>
+
+            <p>
+                Status ESP32:
+                <span id="status">SIMULASI</span>
+            </p>
+
+            <p>
+                Data terakhir:
+                <span id="dataTerakhir">--</span>
+            </p>
+
+        </section>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
