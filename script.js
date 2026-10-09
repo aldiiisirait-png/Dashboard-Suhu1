@@ -18,8 +18,7 @@ const dataTerakhirElement = document.getElementById("dataTerakhir");
 let mode = "simulasi";
 
 // =====================================
-// RTC SIMULASI
-// Menggunakan waktu komputer untuk sementara
+// RTC / WAKTU KOMPUTER
 // =====================================
 
 function updateRTC() {
@@ -105,15 +104,15 @@ const chartKelembapan = new Chart(
 );
 
 // =====================================
-// UPDATE GRAFIK
+// TAMBAH DATA KE GRAFIK
 // =====================================
 
-function tambahDataGrafik(nilaiSuhu, nilaiKelembapan, waktu) {
-    labels.push(waktu);
+function tambahDataGrafik(nilaiSuhu, nilaiKelembapan, waktuData) {
+    labels.push(waktuData);
     dataSuhu.push(nilaiSuhu);
     dataKelembapan.push(nilaiKelembapan);
 
-    // Simpan maksimal 20 data
+    // Maksimal 20 titik data
     if (labels.length > 20) {
         labels.shift();
         dataSuhu.shift();
@@ -131,11 +130,9 @@ function tambahDataGrafik(nilaiSuhu, nilaiKelembapan, waktu) {
 function updateSensorSimulasi() {
     if (mode !== "simulasi") return;
 
-    // Perubahan angka simulasi
     suhu += (Math.random() - 0.5) * 0.3;
     kelembapan += (Math.random() - 0.5) * 0.8;
 
-    // Batas nilai agar tetap masuk akal
     suhu = Math.max(15, Math.min(45, suhu));
     kelembapan = Math.max(20, Math.min(95, kelembapan));
 
@@ -143,43 +140,40 @@ function updateSensorSimulasi() {
     kelembapan = Number(kelembapan.toFixed(2));
 
     const sekarang = new Date();
-    const waktu = sekarang.toLocaleTimeString("id-ID");
+    const waktuData = sekarang.toLocaleTimeString("id-ID");
 
     suhuElement.textContent = suhu.toFixed(2);
     kelembapanElement.textContent = kelembapan.toFixed(2);
 
-    tambahDataGrafik(suhu, kelembapan, waktu);
+    tambahDataGrafik(suhu, kelembapan, waktuData);
 
-    dataTerakhirElement.textContent = waktu;
+    dataTerakhirElement.textContent = waktuData;
     statusElement.textContent = "SIMULASI";
     petunjukMode.textContent =
         "Data simulasi aktif, bukan data sensor asli.";
 }
 
-// Jalankan simulasi setiap 3 detik
+// Simulasi diperbarui setiap 3 detik
 setInterval(updateSensorSimulasi, 3000);
-
-// Tampilkan data langsung saat halaman dibuka
 updateSensorSimulasi();
 
 // =====================================
-// FIREBASE
-// Isi konfigurasi ini nanti dari Firebase
+// KONFIGURASI FIREBASE
 // =====================================
 
 const firebaseConfig = {
-    apiKey: "ISI_API_KEY",
-    authDomain: "ISI_AUTH_DOMAIN",
-    databaseURL: "ISI_DATABASE_URL",
-    projectId: "ISI_PROJECT_ID",
-    appId: "ISI_APP_ID"
+    apiKey: "AIzaSyAMzpQ4b1SvsT2WiTm3GBP1cvrhzhpeMos",
+    authDomain: "dashboard-suhu-esp32.firebaseapp.com",
+    databaseURL: "https://dashboard-suhu-esp32-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "dashboard-suhu-esp32",
+    appId: "1:139582516349:web:6be07423779ed10bc59514"
 };
 
 let sensorRef = null;
 let sensorListener = null;
 
 // =====================================
-// MODE PERANGKAT NYATA
+// KOSONGKAN DATA MODE NYATA
 // =====================================
 
 function kosongkanDataNyata() {
@@ -195,6 +189,10 @@ function kosongkanDataNyata() {
     chartKelembapan.update();
 }
 
+// =====================================
+// HENTIKAN LISTENER FIREBASE
+// =====================================
+
 function hentikanFirebase() {
     if (sensorRef && sensorListener) {
         sensorRef.off("value", sensorListener);
@@ -204,42 +202,39 @@ function hentikanFirebase() {
     sensorListener = null;
 }
 
+// =====================================
+// MODE PERANGKAT NYATA
+// =====================================
+
 function mulaiModeNyata() {
     hentikanFirebase();
     kosongkanDataNyata();
 
-    statusElement.textContent = "BELUM TERHUBUNG";
+    statusElement.textContent = "MENGHUBUNGKAN";
+    petunjukMode.textContent =
+        "Sedang menghubungkan ke Firebase...";
 
+    // Periksa apakah Firebase SDK tersedia
     if (typeof firebase === "undefined") {
+        statusElement.textContent = "LIBRARY ERROR";
         petunjukMode.textContent =
-            "Library Firebase belum berhasil dimuat.";
-        return;
-    }
-
-    const belumDiisi =
-        firebaseConfig.apiKey === "ISI_API_KEY" ||
-        firebaseConfig.databaseURL === "ISI_DATABASE_URL" ||
-        firebaseConfig.projectId === "ISI_PROJECT_ID" ||
-        firebaseConfig.appId === "ISI_APP_ID";
-
-    if (belumDiisi) {
-        statusElement.textContent = "MENUNGGU KONFIGURASI";
-        petunjukMode.textContent =
-            "Firebase belum dikonfigurasi. Data ESP32 belum diterima.";
+            "Firebase SDK belum dimuat. Periksa script Firebase di index.html.";
         return;
     }
 
     try {
+        // Inisialisasi Firebase satu kali
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
 
+        // Hubungkan ke Realtime Database
         const database = firebase.database();
 
+        // ESP32 nantinya mengirim data ke lokasi /sensor
         sensorRef = database.ref("sensor");
 
         sensorListener = function(snapshot) {
-            // Abaikan data jika pengguna sudah kembali ke simulasi
             if (mode !== "nyata") return;
 
             const data = snapshot.val();
@@ -251,7 +246,7 @@ function mulaiModeNyata() {
             ) {
                 statusElement.textContent = "DATA BELUM ADA";
                 petunjukMode.textContent =
-                    "Belum ada data suhu dan kelembapan di Firebase.";
+                    "Belum ada data valid di /sensor. Menunggu data ESP32.";
                 return;
             }
 
@@ -262,20 +257,20 @@ function mulaiModeNyata() {
             kelembapanElement.textContent =
                 nilaiKelembapan.toFixed(2);
 
-            const waktu = data.waktu
+            const waktuData = data.waktu
                 ? String(data.waktu)
                 : new Date().toLocaleTimeString("id-ID");
 
             tambahDataGrafik(
                 nilaiSuhu,
                 nilaiKelembapan,
-                waktu
+                waktuData
             );
 
-            dataTerakhirElement.textContent = waktu;
+            dataTerakhirElement.textContent = waktuData;
             statusElement.textContent = "DATA DITERIMA";
             petunjukMode.textContent =
-                "Data diterima dari Firebase.";
+                "Data diterima dari Firebase Realtime Database.";
         };
 
         sensorRef.on(
@@ -288,10 +283,6 @@ function mulaiModeNyata() {
             }
         );
 
-        statusElement.textContent = "MENGHUBUNGKAN";
-        petunjukMode.textContent =
-            "Menghubungkan ke Firebase dan menunggu data ESP32.";
-
     } catch (error) {
         statusElement.textContent = "KONEKSI GAGAL";
         petunjukMode.textContent =
@@ -300,7 +291,7 @@ function mulaiModeNyata() {
 }
 
 // =====================================
-// PILIH MODE
+// PILIH MODE DASHBOARD
 // =====================================
 
 modeSelect.addEventListener("change", function() {
