@@ -1,19 +1,16 @@
-```html
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>ESP32 Monitoring</title>
 
     <link rel="stylesheet" href="style.css">
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
-
 <body>
     <div class="container">
 
@@ -36,7 +33,6 @@
         </section>
 
         <section class="cards">
-
             <div class="card">
                 <h3>RTC</h3>
                 <div id="tanggal">--</div>
@@ -46,17 +42,16 @@
             <div class="card">
                 <h3>SUHU</h3>
                 <div class="nilai">
-                    <span id="suhu">--</span> °C
+                    <span id="suhu">30.10</span> °C
                 </div>
             </div>
 
             <div class="card">
                 <h3>KELEMBAPAN</h3>
                 <div class="nilai">
-                    <span id="kelembapan">--</span> %
+                    <span id="kelembapan">74.30</span> %
                 </div>
             </div>
-
         </section>
 
         <section class="grafik">
@@ -71,14 +66,8 @@
 
         <section class="status">
             <h3>Status Sistem</h3>
-
-            <p>Status ESP32:
-                <span id="status">SIMULASI</span>
-            </p>
-
-            <p>Data terakhir:
-                <span id="dataTerakhir">--</span>
-            </p>
+            <p>Status ESP32: <span id="status">SIMULASI</span></p>
+            <p>Data terakhir: <span id="dataTerakhir">--</span></p>
         </section>
 
     </div>
@@ -86,4 +75,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-```
