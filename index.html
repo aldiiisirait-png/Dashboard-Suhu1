@@ -1,18 +1,16 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>ESP32 Monitoring</title>
 
     <link rel="stylesheet" href="style.css">
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-
     <div class="container">
 
         <header>
@@ -20,12 +18,25 @@
             <p>Monitoring Suhu dan Kelembapan</p>
         </header>
 
-        <section class="cards">
+        <section class="card">
+            <h3>MODE PEMANTAUAN</h3>
 
+            <label for="modeSelect">Pilih sumber data:</label>
+            <select id="modeSelect">
+                <option value="simulasi">Simulasi</option>
+                <option value="nyata">Perangkat Nyata (ESP32)</option>
+            </select>
+
+            <p id="petunjukMode">
+                Data simulasi sedang digunakan.
+            </p>
+        </section>
+
+        <section class="cards">
             <div class="card">
                 <h3>RTC</h3>
-                <div id="tanggal">08 Oktober 2026</div>
-                <div id="waktu">00:00:00</div>
+                <div id="tanggal">--</div>
+                <div id="waktu">--:--:--</div>
             </div>
 
             <div class="card">
@@ -41,44 +52,31 @@
                     <span id="kelembapan">--</span> %
                 </div>
             </div>
-
         </section>
 
         <section class="grafik">
-
             <h2>Grafik Suhu</h2>
-
             <canvas id="grafikSuhu"></canvas>
-
         </section>
 
         <section class="grafik">
-
             <h2>Grafik Kelembapan</h2>
-
             <canvas id="grafikKelembapan"></canvas>
-
         </section>
 
         <section class="status">
-
             <h3>Status Sistem</h3>
-
-            <p>
-                Status ESP32:
-                <span id="status">SIMULASI</span>
-            </p>
-
-            <p>
-                Data terakhir:
-                <span id="dataTerakhir">--</span>
-            </p>
-
+            <p>Status ESP32: <span id="status">SIMULASI</span></p>
+            <p>Data terakhir: <span id="dataTerakhir">--</span></p>
         </section>
 
     </div>
 
-    <script src="script.js"></script>
+    <!-- Firebase untuk menerima data ESP32 nantinya -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
+    <script src="script.js"></script>
 </body>
 </html>
+```
