@@ -4,10 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>ESP32 Monitoring</title>
 
     <link rel="stylesheet" href="style.css">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
 
 <body>
@@ -18,10 +22,9 @@
             <p>Monitoring Suhu dan Kelembapan</p>
         </header>
 
-        <section class="card">
+        <section class="card mode-card">
             <h3>MODE PEMANTAUAN</h3>
 
-            <label for="modeSelect">Pilih sumber data:</label>
             <select id="modeSelect">
                 <option value="simulasi">Simulasi</option>
                 <option value="nyata">Perangkat Nyata (ESP32)</option>
@@ -33,6 +36,7 @@
         </section>
 
         <section class="cards">
+
             <div class="card">
                 <h3>RTC</h3>
                 <div id="tanggal">--</div>
@@ -52,6 +56,7 @@
                     <span id="kelembapan">--</span> %
                 </div>
             </div>
+
         </section>
 
         <section class="grafik">
@@ -66,15 +71,17 @@
 
         <section class="status">
             <h3>Status Sistem</h3>
-            <p>Status ESP32: <span id="status">SIMULASI</span></p>
-            <p>Data terakhir: <span id="dataTerakhir">--</span></p>
+
+            <p>Status ESP32:
+                <span id="status">SIMULASI</span>
+            </p>
+
+            <p>Data terakhir:
+                <span id="dataTerakhir">--</span>
+            </p>
         </section>
 
     </div>
-
-    <!-- Firebase untuk menerima data ESP32 nantinya -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
     <script src="script.js"></script>
 </body>
